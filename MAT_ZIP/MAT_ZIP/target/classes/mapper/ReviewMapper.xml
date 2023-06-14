@@ -31,15 +31,32 @@
 	</resultMap>
 	
 	<select id="getReceiptWithRestaurant" parameterType="String" resultMap="MZRegisterReceiptDTOMap">
-	    SELECT r.no as r_no, r.landNumAddress as r_landNumAddress, r.roadNameAddress as r_roadNameAddress,
+	    <!-- SELECT r.no as r_no, r.landNumAddress as r_landNumAddress, r.roadNameAddress as r_roadNameAddress,
 	           r.name as r_name, r.status as r_status, r.tel as r_tel, r.food as r_food,
 	           m.no as m_no, m.userId as m_userId, m.storeAddress as m_storeAddress,
 	           m.storePhoneNumber as m_storePhoneNumber, m.buyTime as m_buyTime
-	    FROM mzregisterinfo m 
+	    FROM mzRegisterInfo m 
 	    JOIN restaurant r ON m.storePhoneNumber = r.tel 
 	    WHERE m.userID = #{user_id} 
 	    AND m.no NOT IN 
-	    (SELECT receipt_id FROM cs_review)
+	    (SELECT receipt_id FROM cs_review) -->
+	    
+	    SELECT 
+		    r.no as r_no, r.landNumAddress as r_landNumAddress, 
+		    r.roadNameAddress as r_roadNameAddress, r.name as r_name, 
+		    r.status as r_status, r.tel as r_tel, r.food as r_food,
+		    m.no as m_no, m.userId as m_userId, m.storeAddress as m_storeAddress,
+		    m.storePhoneNumber as m_storePhoneNumber, m.buyTime as m_buyTime
+		FROM 
+		    mzRegisterInfo m 
+		JOIN 
+		    restaurant r ON m.storePhoneNumber = r.tel 
+		LEFT JOIN
+		    cs_review cr ON m.no = cr.receipt_id
+		WHERE 
+		    m.userID = #{user_id} 
+		    AND cr.receipt_id IS NULL;
+	    
 	</select>
 	
 
